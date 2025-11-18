@@ -80,7 +80,7 @@ classdef FRA_data < handle
 %             disp('<<<<<<<<<<<<<<<')
             R = sqrt(obj.X.^2 + obj.Y.^2);
             Phi = atan2(obj.Y, obj.X)*180/pi;
-            Phi = phase_shift_correction(Phi);
+            Phi = FRA_utils.phase_shift_correction(Phi);
         end
 
         function Data_diff = correction(obj, corr_obj)
