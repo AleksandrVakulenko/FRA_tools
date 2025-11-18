@@ -1,5 +1,5 @@
 name:
-FRA_plot
+FRA_tools
 
 dependencies:
 Plotlib
