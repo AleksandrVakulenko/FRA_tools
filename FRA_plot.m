@@ -95,7 +95,7 @@ classdef FRA_plot < handle
 
         function replace_FRA_data(obj, Dataset)
             obj.clear_axis;
-            color_array = 'brgykmc';
+            color_array = 'brgykmcbrgykmc';
             for i = 1:numel(Dataset)
                 Data = Dataset(i);
                 [F_arr, A_arr, P_arr] = Data.RPhi;
