@@ -118,7 +118,7 @@ classdef FRA_plot < handle
                 FRA_plot_design(obj.axis_top, [freq_min freq_max], ...
                     obj.ylabel_top, obj.style)
                 FRA_plot_design(obj.axis_bot, [freq_min freq_max], ...
-                    obj.ylabel_top, obj.style)
+                    obj.ylabel_bot, obj.style)
             end
 
             drawnow
