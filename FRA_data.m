@@ -30,6 +30,30 @@ classdef FRA_data < handle
             end
         end
 
+        function obj_out = copy(obj)
+            obj_out = FRA_data(obj.unit, obj.freq, "X", obj.X, "Y", obj.Y);
+        end
+
+        function obj_out = get_part(obj, range)
+            arguments
+                obj
+                range logical
+            end
+            obj_out = FRA_data(obj.unit, obj.freq(range), ...
+                "X", obj.X(range), "Y", obj.Y(range));
+        end
+
+        function obj_out = union_with(obj, data)
+            freq_new = [obj.freq data.freq];
+            X_new = [obj.X data.X];
+            Y_new = [obj.Y data.Y];
+            [freq_new, ind] = sort(freq_new);
+            X_new = X_new(ind);
+            Y_new = Y_new(ind);
+            obj_out = FRA_data(obj.unit, freq_new, ...
+                "X", X_new, "Y", Y_new);
+        end
+
         function add(obj, freq, data)
             arguments
                 obj

@@ -6,7 +6,7 @@
 % 2) Add ability to replace label
 % 3) add() with autoset of x/y-lims
 % 4) indexing lines
-% 5) 
+% 5) linear x scale if log does not need
 
 classdef FRA_plot < handle
 
@@ -169,6 +169,10 @@ end
 function x_lim_freq(ax, freq_list)
     Min = min(freq_list);
     Max = max(freq_list);
+    if Min == Max
+        Min = Min*0.95;
+        Max = Max*1.05;
+    end
     set(ax, 'xlim', [Min*1 Max*1]);
 end
 
