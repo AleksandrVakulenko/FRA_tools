@@ -1,7 +1,7 @@
 
 % TODO:
 % 1) Add unit comment for auto plot decoration
-% 2) 
+% 2) Add function for same code from operators
 % 3) 
 
 
@@ -122,6 +122,44 @@ classdef FRA_data < handle
             R_new = R1./R2;
             Phi_new = Phi1 - Phi2;
             obj = FRA_data(obj1.unit, obj1.freq, 'R', R_new, 'Phi', Phi_new);
+        end
+
+        function obj = mtimes(obj1, obj2)
+            % FIXME: same code as it mrdivide
+            if numel(obj1.freq) == numel(obj2.freq)
+                if ~array_cmp(obj1.freq, obj2.freq)
+                    error("both freq list must be the same")
+                end
+            else
+                error("both freq list must be the same")
+            end
+            if ~unit_cmp(obj1.unit, obj2.unit)
+                % FIXME: do we need to cmp units?
+                % error("both unit values must be the same")
+            end
+            [~, R1, Phi1] = obj1.RPhi;
+            [~, R2, Phi2] = obj2.RPhi;
+            R_new = R1.*R2;
+            Phi_new = Phi1 + Phi2;
+            obj = FRA_data(obj1.unit, obj1.freq, 'R', R_new, 'Phi', Phi_new);
+        end
+
+        function obj = times(obj1, obj2)
+            if numel(obj1) == 1 && numel(obj2) ~= 1
+                % swap
+                tmp = obj1;
+                obj1 = obj2;
+                obj2 = tmp;
+            elseif numel(obj2) == 1
+                % OK
+            else
+                error("Arrays have incompatible sizes for this operation.")
+            end
+
+            N = numel(obj1);
+            for i = 1:N
+                obj(i) = obj1(i)*obj2;
+            end
         end
 
     end

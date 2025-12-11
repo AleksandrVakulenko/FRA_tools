@@ -3,8 +3,10 @@
 
 % TODO:
 % 1) Add ability to get/set/delete data
-% 2) Add multiple data
-% 3) Add ability to replace label
+% 2) Add ability to replace label
+% 3) add() with autoset of x/y-lims
+% 4) indexing lines
+% 5) 
 
 classdef FRA_plot < handle
 
@@ -64,7 +66,6 @@ classdef FRA_plot < handle
             cla
         end
 
-
         function replace(obj, F_arr, A_arr, P_arr, line_color)
             arguments
                 obj
@@ -95,12 +96,31 @@ classdef FRA_plot < handle
 
         function replace_FRA_data(obj, Dataset)
             obj.clear_axis;
-            color_array = 'brgykmcbrgykmc';
-            for i = 1:numel(Dataset)
-                Data = Dataset(i);
-                [F_arr, A_arr, P_arr] = Data.RPhi;
-                obj.replace(F_arr, A_arr, P_arr, color_array(i));
+
+            if numel(Dataset) == 1
+                [F_arr, A_arr, P_arr] = Dataset.RPhi;
+                obj.replace(F_arr, A_arr, P_arr);
+            else
+                color_array = 'brgykmcbrgykmc';
+                freq_min = inf;
+                freq_max = -inf;
+                for i = 1:numel(Dataset)
+                    Data = Dataset(i);
+                    [F_arr, A_arr, P_arr] = Data.RPhi;
+                    obj.replace(F_arr, A_arr, P_arr, color_array(i));
+                    if min(F_arr) < freq_min
+                        freq_min = min(F_arr);
+                    end
+                    if max(F_arr) > freq_max
+                        freq_max = max(F_arr);
+                    end
+                end
+                FRA_plot_design(obj.axis_top, [freq_min freq_max], ...
+                    obj.ylabel_top, obj.style)
+                FRA_plot_design(obj.axis_bot, [freq_min freq_max], ...
+                    obj.ylabel_top, obj.style)
             end
+
             drawnow
         end
 
@@ -110,11 +130,13 @@ end
 
 
 
+
+
 function FRA_plot_design(ax, freq_list, Ylable, Tick_style)
     arguments
         ax
         freq_list {mustBeNumeric(freq_list)}
-        Ylable (1,1) string
+        Ylable (1,1) string = ""
         Tick_style {mustBeMember(Tick_style, ["SI", "POW", "auto"])} = "auto"
     end
     
@@ -125,7 +147,9 @@ function FRA_plot_design(ax, freq_list, Ylable, Tick_style)
     Plotlib.expand_axis(ax, "x", "By_lim");
     Plotlib.log_scale_ticks("x",Tick_style , ax)
     
-    ylabel(Ylable)
+    if Ylable ~= ""
+        ylabel(Ylable)
+    end
     set(ax, 'box', 'on')
     set(ax, 'ygrid', 'on')
     [need_y_log, Limits] = check_y_values(ax);
@@ -138,19 +162,19 @@ function FRA_plot_design(ax, freq_list, Ylable, Tick_style)
         Plotlib.expand_axis(ax, "y");
     end
     
-    end
+end
     
     
-    
-    function x_lim_freq(ax, freq_list)
+
+function x_lim_freq(ax, freq_list)
     Min = min(freq_list);
     Max = max(freq_list);
     set(ax, 'xlim', [Min*1 Max*1]);
-    end
-    
-    
-    
-    function [need_log, Limits] = check_y_values(ax_frame)
+end
+
+
+
+function [need_log, Limits] = check_y_values(ax_frame)
     
     [Span, Limits] = Plotlib.find_limits(ax_frame, 'y');
     
