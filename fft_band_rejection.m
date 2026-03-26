@@ -63,3 +63,14 @@ end
     FFT(ind22:ind12) = FFT(ind22:ind12)*10^(ValueDB/20);
 
 end
+
+
+
+% FIXME: unused
+function FFT = fft_erase_single_freq(FFT, FFT_freq, Freq_filt)
+    [~, ind1] = min(abs(FFT_freq - Freq_filt));
+    ind2 = 2 + numel(FFT) - ind1;
+    FFT(ind1) = 0;
+    FFT(ind2) = 0;
+end
+
