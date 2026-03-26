@@ -41,11 +41,11 @@ arguments
     Freq_min
     Freq_max = []
 end
-    if Freq_max < 0 || Freq_min < 0
-        error('f must be > 0')
-    end
     if isempty(Freq_max) || Freq_max == inf
         Freq_max = FFT_freq(end);
+    end
+    if Freq_max < 0 || Freq_min < 0
+        error('f must be > 0')
     end
     [~, ind11] = min(abs(FFT_freq - Freq_min));
     if ind11 < 2
