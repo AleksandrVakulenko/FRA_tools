@@ -59,8 +59,14 @@ end
     end
     ind22 = 2 + numel(FFT) - ind21;
 
-    FFT(ind11:ind21) = FFT(ind11:ind21)*10^(ValueDB/20);
-    FFT(ind22:ind12) = FFT(ind22:ind12)*10^(ValueDB/20);
+    Range_1 = ind11:ind21;
+    Range_2 = ind22:ind12;
+
+    ValueDB_1 = make_rej_arr(Range_1, ValueDB);
+    ValueDB_2 = make_rej_arr(Range_2, ValueDB);
+
+    FFT(Range_1) = FFT(Range_1).*10.^(ValueDB_1/20);
+    FFT(Range_2) = FFT(Range_2).*10.^(ValueDB_2/20);
 
 end
 
@@ -74,3 +80,24 @@ function FFT = fft_erase_single_freq(FFT, FFT_freq, Freq_filt)
     FFT(ind2) = 0;
 end
 
+
+function Value_DB_arr = make_rej_arr(Range_1, ValueDB)
+if ValueDB > 0
+    ValueDB = 0;
+end
+
+N = numel(Range_1);
+if N > 2
+    X = 1:numel(Range_1);
+    Value_DB_arr =  ValueDB + abs((X - mean(X))*ValueDB/mean(X));
+else
+    Value_DB_arr = ValueDB * ones(size(Range_1));
+end
+
+Min_v = min(Value_DB_arr);
+if Min_v > ValueDB
+Range = Value_DB_arr == Min_v;
+Value_DB_arr(Range) = ValueDB;
+end
+
+end
